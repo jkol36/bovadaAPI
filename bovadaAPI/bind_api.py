@@ -16,12 +16,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def bind_api(auth_obj, action, *args, **kwargs):
-	soccer_matches = []
-	basketball_matches = []
-	baseball_matches = []
-	tennis_matches = []
-	rugby_matches = []
-	football_matches = []
+
+	
 	try:
 		amount_to_deposit = kwargs.pop("amount")
 	except KeyError:
@@ -31,7 +27,12 @@ def bind_api(auth_obj, action, *args, **kwargs):
 		bets = kwargs.pop("bets")
 	except KeyError:
 		bets = None
-
+	soccer_matches = []
+	basketball_matches = []
+	baseball_matches = []
+	tennis_matches = []
+	rugby_matches = []
+	football_matches = []
 	urls_to_scrape = []
 	profile_id = auth_obj._auth["profile_id"]
 	access_token = auth_obj._auth["access_token"]
@@ -76,27 +77,32 @@ def bind_api(auth_obj, action, *args, **kwargs):
 					if bmatches:
 						for match in bmatches:
 							if match.sport == "BASK":
+								match.sport = "basketball"
 								if (match.home_team_full_name not in [x.home_team_full_name for x in basketball_matches] and
 									match.away_team_full_name not in [away_team.away_team_full_name for away_team in basketball_matches]):
 										basketball_matches.append(match)
 
 
 							elif match.sport == "FOOT":
+								match.sport = "football"
 								if(match.home_team_full_name not in [z.home_team_full_name for z in football_matches] and
 									match.away_team_full_name not in [t.away_team_full_name for t in football_matches]):
 										football_matches.append(match)
 
 							elif match.sport == "BASE":
+								match.sport = "football"
 								if (match.home_team_full_name not in [p.home_team_full_name for p in basketball_matches] and 
 									match.away_team_full_name not in [j.away_team_full_name for j in basketball_matches]):
 										basketball_matches.append(match)
 
 							elif match.sport == "TENN":
+								match.sport = "tennis"
 								if (match.home_team_full_name not in [n.home_team_full_name for n in tennis_matches] and
 									match.away_team_full_name not in [m.away_team_full_name for m in tennis_matches]):
 										tennis_matches.append(match)
 
 							elif match.sport == "RUGU":
+								match.sport = "rugby"
 								if (match.home_team_full_name not in [s.home_team_full_name for s in rugby_matches] and
 									match.away_team_full_name not in [l.away_team_full_name for l in rugby_matches]
 									):
@@ -104,6 +110,7 @@ def bind_api(auth_obj, action, *args, **kwargs):
 								
 
 							elif match.sport == "SOCC":
+								match.sport  =  "soccer"
 								if (match.home_team_full_name not in [g.home_team_full_name for g in soccer_matches] and
 									match.away_team_full_name not in [v.away_team_full_name for v in soccer_matches]):
 										soccer_matches.append(match)
@@ -133,15 +140,15 @@ def find_relative_urls(response, index=1, session=None):
 	try:
 		url_list = [x['relativeUrl'] for x in response.json()['data']['page']['navigation']['navigation'][index]['items'] if x not in all_urls]
 	except (IndexError, KeyError, TypeError):
-		url_list = None
+		url_list = []
 		pass
-	if url_list:
-		for url in url_list:
-			page = get_relative_url(url, session)
-			if page:
-				find_relative_urls(page, index=index+1, session=session)
-		return all_urls
+	
+	for url in url_list:
+		page = get_relative_url(url, session)
+		if page:
+			find_relative_urls(page, index=index+1, session=session)
 	return all_urls
+
 
 def get_relative_url(endpoint, session):
 	URL = "https://sports.bovada.lv{}?json=true".format(endpoint)

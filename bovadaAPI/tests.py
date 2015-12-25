@@ -121,5 +121,4 @@ class MyTest(unittest.TestCase):
 
 
 
-t = MyTest()
-t.runTest()
+

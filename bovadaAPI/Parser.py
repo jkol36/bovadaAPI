@@ -314,6 +314,7 @@ def parse_special_response(response, action):
 
 		if items:
 			for item in items:
+				print item
 				try:
 					riskAmount = item["riskAmount"]
 				except KeyError, e:
