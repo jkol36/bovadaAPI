@@ -304,6 +304,8 @@ def parse_special_response(response, action):
 	elif action == "wallets":
 		return response.json()
 
+
+
 	elif action == "open_bets":
 		outstanding_bet_amount = 0
 		total_odds = 0
@@ -356,7 +358,7 @@ def parse_special_response(response, action):
 			except KeyError, e:
 				print e
 
-	elif action == "bet_history":
+	elif action == "bet_history" or action=="bet_history_24_hours" or action=="bet_history_3_days":
 		total_profit = 0
 		number_of_bets_won = 0
 		number_of_bets_lost = 0

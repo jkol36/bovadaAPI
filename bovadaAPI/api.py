@@ -82,6 +82,16 @@ class BovadaApi(object):
 
 	@property
 	@authentication_required
+	def bet_history_24_hours(self):
+		return bind_api(self, action="bet_history_24_hours")
+
+	@property
+	@authentication_required
+	def bet_history_3_days(self):
+		return bind_api(self, action="bet_history_3_days")
+
+	@property
+	@authentication_required
 	def open_bets(self):
 		"""this returns your open bets"""
 		return bind_api(self, action="open_bets")

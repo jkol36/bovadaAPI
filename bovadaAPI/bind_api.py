@@ -45,7 +45,9 @@ def bind_api(auth_obj, action, *args, **kwargs):
 		action=="balance" or
 		action == "bet_history" or
 		action == "open_bets" or 
-		action == "open_bet_outcome_ids"
+		action == "open_bet_outcome_ids" or
+		action == "bet_history_24_hours" or
+		action == "bet_history_3_days"
 		):
 
 		headers = get_bovada_headers_authorization(access_token, token_type)
@@ -61,7 +63,9 @@ def bind_api(auth_obj, action, *args, **kwargs):
 				action=="balance" or
 				action == "open_bets" or
 				action == "bet_history" or
-				action == "open_bet_outcome_ids"
+				action == "open_bet_outcome_ids" or
+				action == "bet_history_24_hours" or
+				action == "bet_history_3_days"
 				):
 				return parse_special_response(request, action=action)
 			else:
@@ -78,42 +82,29 @@ def bind_api(auth_obj, action, *args, **kwargs):
 						for match in bmatches:
 							if match.sport == "BASK":
 								match.sport = "basketball"
-								if (match.home_team_full_name not in [x.home_team_full_name for x in basketball_matches] and
-									match.away_team_full_name not in [away_team.away_team_full_name for away_team in basketball_matches]):
-										basketball_matches.append(match)
+								basketball_matches.append(match)
 
 
 							elif match.sport == "FOOT":
 								match.sport = "football"
-								if(match.home_team_full_name not in [z.home_team_full_name for z in football_matches] and
-									match.away_team_full_name not in [t.away_team_full_name for t in football_matches]):
-										football_matches.append(match)
+								football_matches.append(match)
 
 							elif match.sport == "BASE":
-								match.sport = "football"
-								if (match.home_team_full_name not in [p.home_team_full_name for p in basketball_matches] and 
-									match.away_team_full_name not in [j.away_team_full_name for j in basketball_matches]):
-										basketball_matches.append(match)
+								match.sport = "baseball"
+								baseball_matches.append(match)
 
 							elif match.sport == "TENN":
 								match.sport = "tennis"
-								if (match.home_team_full_name not in [n.home_team_full_name for n in tennis_matches] and
-									match.away_team_full_name not in [m.away_team_full_name for m in tennis_matches]):
-										tennis_matches.append(match)
+								tennis_matches.append(match)
 
 							elif match.sport == "RUGU":
 								match.sport = "rugby"
-								if (match.home_team_full_name not in [s.home_team_full_name for s in rugby_matches] and
-									match.away_team_full_name not in [l.away_team_full_name for l in rugby_matches]
-									):
-										rugby_matches.append(match)
+								rugby_matches.append(match)
 								
 
 							elif match.sport == "SOCC":
 								match.sport  =  "soccer"
-								if (match.home_team_full_name not in [g.home_team_full_name for g in soccer_matches] and
-									match.away_team_full_name not in [v.away_team_full_name for v in soccer_matches]):
-										soccer_matches.append(match)
+								soccer_matches.append(match)
 							else:
 								print "cant parse sport or sport is none: ", match.sport
 				return {
@@ -140,6 +131,7 @@ def find_relative_urls(response, index=1, session=None):
 	try:
 		url_list = [x['relativeUrl'] for x in response.json()['data']['page']['navigation']['navigation'][index]['items'] if x not in all_urls]
 	except (IndexError, KeyError, TypeError):
+		#print "no more relative urls for {}".format(response.url)
 		url_list = []
 		pass
 	
@@ -198,6 +190,12 @@ def get_endpoint(action, profile_id):
 
 	elif action == "bet_history":
 		endpoint = "https://sports.bovada.lv/services/web/v2/profiles/%s/wagers?status=SETTLED&channel=ALL&days=14" %profile_id
+
+	elif action == "bet_history_24_hours":
+		endpoint = "https://sports.bovada.lv/services/web/v2/profiles/%s/wagers?status=SETTLED&channel=ALL&days=1" %profile_id
+
+	elif action == "bet_history_3_days":
+		endpoint = "https://sports.bovada.lv/services/web/v2/profiles/%s/wagers?status=SETTLED&channel=ALL&days=3" %profile_id
 
 	else:
 		raise BovadaException("did not receive a valid action. Received: {}".format(action))
