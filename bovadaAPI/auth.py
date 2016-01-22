@@ -6,14 +6,14 @@ import json
 import time
 
 
-def login_to_bovada():
+def login_to_bovada(credentials=None):
 	"""on purpose I kept the login flow the same as if you were logging into Bovada using a browser.
 		I could have just queried the api/token endpoint directly, but figured that may raise some
 		flags with bovada since the login process would be skipping a step. 
 	"""
 	query_1 = query_login_endpoint() #query the login endpoint like we would if using a browser
 	if query_1.status_code == 200:
-		authenticated_ourselves = bovada_auth()
+		authenticated_ourselves = bovada_auth(credentials=credentials)
 		if authenticated_ourselves.status_code == 200:
 			return authenticated_ourselves
 		else:
@@ -49,6 +49,8 @@ def bovada_auth(credentials=None):
 			password = credentials["password"]
 		except KeyError:
 			raise BovadaException("the credentials object passed does not have a Password attribute as a key")
+
+
 	payload = json.dumps({
 		"username": username, 
 		"password":password})

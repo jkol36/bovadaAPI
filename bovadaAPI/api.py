@@ -2,7 +2,7 @@
 #version: 1.0
 #description: An API to interact with https://bovada.lv. 
 import os
-from cached_property import cached_property
+#from cached_property import cached_property
 from auth import login_to_bovada
 from headers import get_bovada_headers_generic
 from error import BovadaException, BovadaAuthenticationError
@@ -28,15 +28,14 @@ class BovadaApi(object):
 		self._auth = None
 		super(BovadaApi, self).__init__(*args, **kwargs)
 
-	@property
-	def auth(self):
+	def auth(self, credentials=None):
 		"""
 		attemps to login to bovada with exports BovadaUsername and Password
 		if the request is successfull, all subsequent requests will use the cookies
 		and headers that were sent back from bovada. 
 		"""
 		try:
-			login = login_to_bovada()
+			login = login_to_bovada(credentials)
 		except Exception, e:
 			raise BovadaAuthenticationError(e)
 		else:

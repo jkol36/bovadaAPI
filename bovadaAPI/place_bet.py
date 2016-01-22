@@ -1,6 +1,6 @@
 import requests
 import json
-from betstream.bovadaAPI.bovadaAPI.search_dictionary_for_certain_keys import search_dictionary_for_certain_keys
+from search_dictionary_for_certain_keys import search_dictionary_for_certain_keys
 
 
 
