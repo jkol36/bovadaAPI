@@ -1,5 +1,6 @@
 import requests
 import json
+from betstream.bovadaAPI.bovadaAPI.search_dictionary_for_certain_keys import search_dictionary_for_certain_keys
 
 
 
@@ -31,12 +32,26 @@ class PlaceBet(object):
 		updated_price_id = self.replace_priceId(priceId, origdict)
 		return origdict
 	
-
+	def bet_went_through(json):
+		print json
 	def place(self, data, cookies, headers):
 		if cookies and headers and data:
 			response = requests.post('https://sports.bovada.lv/services/sports/bet/betslip', headers=headers, cookies=cookies, data=data)
 			if response.status_code == 200:
+				status = search_dictionary_for_certain_keys("response", response.json())
+				if status:
+					print "got status"
+					key = search_dictionary_for_certain_keys("key", status)
+					if key:
+						print "got the key"
+						r = requests.get("https://sports.bovada.lv/services/sports/bet/betslip/{}".format(key))
+						if bet_went_through(r.json()):
+							return True
+						else:
+							return False
+
 				try:
+					print response.keys()
 					print response.json()
 				except Exception, e:
 					print e

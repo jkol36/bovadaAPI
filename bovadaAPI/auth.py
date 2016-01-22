@@ -27,16 +27,28 @@ def query_login_endpoint():
 	return requests.get("https://www.bovada.lv/websites/services/components/login")
 	
 
-def bovada_auth():
-	try:
-		username = os.environ["BOVADA_USERNAME"]
-	except KeyError:
-		raise BovadaException("could not find your bovada username. Did you export it as an environment variable?")
-	try:
-		password = os.environ["BOVADA_PASSWORD"]
-	except KeyError:
-		raise BovadaException("Could not find your bovada password. Did you export it as an environment variable?")
-	
+#pass in a dictionary where username is the username of the account
+#and password is the password to the account
+def bovada_auth(credentials=None):
+	if not credentials:
+		try:
+			username = os.environ["BOVADA_USERNAME"]
+		except KeyError:
+			raise BovadaException("could not find your bovada username. Did you export it as an environment variable?")
+		try:
+			password = os.environ["BOVADA_PASSWORD"]
+		except KeyError:
+			raise BovadaException("Could not find your bovada password. Did you export it as an environment variable?")
+	else:
+		try:
+			username = credentials['username']
+		except KeyError:
+			raise BovadaException("the credentials object passed does not have a username attribute as a key")
+
+		try:
+			password = credentials["password"]
+		except KeyError:
+			raise BovadaException("the credentials object passed does not have a Password attribute as a key")
 	payload = json.dumps({
 		"username": username, 
 		"password":password})
