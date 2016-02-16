@@ -35,7 +35,7 @@ class BovadaApi(object):
 		and headers that were sent back from bovada. 
 		"""
 		try:
-			login = login_to_bovada(credentials)
+			login = login_to_bovada(credentials=credentials)
 		except Exception, e:
 			raise BovadaAuthenticationError(e)
 		else:
