@@ -209,7 +209,3 @@ def stream():
 
 
 
-
-
-
-print stream()
