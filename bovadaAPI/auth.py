@@ -17,7 +17,6 @@ def login_to_bovada(credentials=None):
 		if authenticated_ourselves.status_code == 200:
 			return authenticated_ourselves
 		else:
-			console.log('something went wrong')
 			raise BovadaAuthenticationError(authenticated_ourselves.reason)
 	else:
 		raise BovadaException(query_1.reason)
