@@ -9,7 +9,7 @@ import time
 def login_to_bovada(credentials=None):
 	"""on purpose I kept the login flow the same as if you were logging into Bovada using a browser.
 		I could have just queried the api/token endpoint directly, but figured that may raise some
-		flags with bovada since the login process would be skipping a step. 
+		flags with bovada since the login process would be skipping a step.
 	"""
 	query_1 = query_login_endpoint() #query the login endpoint like we would if using a browser
 	if query_1.status_code == 200:
@@ -17,6 +17,7 @@ def login_to_bovada(credentials=None):
 		if authenticated_ourselves.status_code == 200:
 			return authenticated_ourselves
 		else:
+			console.log('something went wrong')
 			raise BovadaAuthenticationError(authenticated_ourselves.reason)
 	else:
 		raise BovadaException(query_1.reason)
@@ -24,12 +25,13 @@ def login_to_bovada(credentials=None):
 
 
 def query_login_endpoint():
-	return requests.get("https://www.bovada.lv/websites/services/components/login")
-	
+	return requests.get("https://sports.bovada.lv/websites/services/components/login", headers=get_bovada_headers_generic())
+
 
 #pass in a dictionary where username is the username of the account
 #and password is the password to the account
 def bovada_auth(credentials=None):
+	print 'called'
 	if not credentials:
 		try:
 			username = os.environ["BOVADA_USERNAME"]
@@ -52,8 +54,8 @@ def bovada_auth(credentials=None):
 
 
 	payload = json.dumps({
-		"username": username, 
+		"username": username,
 		"password":password})
-	return requests.post("https://www.bovada.lv/services/web/v2/oauth/token", 
-		data=payload, 
+	return requests.post("https://sports.bovada.lv/services/web/v2/oauth/token",
+		data=payload,
 		headers=get_bovada_headers_generic())
