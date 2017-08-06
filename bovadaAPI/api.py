@@ -28,14 +28,14 @@ class BovadaApi(object):
 		self._auth = None
 		super(BovadaApi, self).__init__(*args, **kwargs)
 
-	def auth(self, credentials=None):
+	def auth(self, username=None, password=None):
 		"""
 		attemps to login to bovada with exports BovadaUsername and Password
 		if the request is successfull, all subsequent requests will use the cookies
 		and headers that were sent back from bovada.
 		"""
 		try:
-			login = login_to_bovada(credentials=credentials)
+			login = login_to_bovada(username=username, password=password)
 		except Exception, e:
 			print e
 			raise BovadaAuthenticationError(e)

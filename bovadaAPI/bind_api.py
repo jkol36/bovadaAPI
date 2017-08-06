@@ -70,7 +70,7 @@ def bind_api(auth_obj, action, *args, **kwargs):
 				return parse_special_response(request, action=action)
 			else:
 				query_all_endpoints = find_relative_urls(request, session=s)
-				
+				print(len(all_urls))
 				for obj in response_objects:
 					#this is where we actually get the bovada matches on each page
 					try:

@@ -362,6 +362,9 @@ def parse_special_response(response, action):
 		total_profit = 0
 		number_of_bets_won = 0
 		number_of_bets_lost = 0
+		total_turnover = 0
+		total_bets = 0
+		roi = 0
 		try:
 			items = response.json()["items"]
 		except KeyError, e:
@@ -369,6 +372,8 @@ def parse_special_response(response, action):
 
 		if items:
 			for item in items:
+				total_turnover += float(item['riskAmount'])
+				total_bets += 1
 				try:
 					outcomeCode = item["outcomeCode"]
 				except KeyError, e:
@@ -386,7 +391,8 @@ def parse_special_response(response, action):
 					):
 					number_of_bets_lost +=1
 					total_profit -= float(item["riskAmount"])
-			return "total_profit: ${}, num_bets_won: {}:), number_of_bets_lost: {}:(".format(total_profit, number_of_bets_won, number_of_bets_lost)
+			roi = float(total_profit)/float(total_turnover)
+			return "total_profit: ${}, total_turnover: {}, roi {}, total_bets: {}".format(total_profit, total_turnover, roi, total_bets)
 
 
 
